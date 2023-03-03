@@ -91,17 +91,23 @@ class StatesExamplePage extends StatelessWidget {
                       const StatefulColorWidget(
                         keepAlive: false,
                         title: "Stateful Widget",
+                        center: Icon(Icons.touch_app),
                       ),
                       _space(),
                       //StatefulWidget with keepAlive
                       const StatefulColorWidget(
                         keepAlive: true,
                         title: "Stateful Widget with keepAlive=true",
+                        center: Icon(Icons.touch_app),
                       ),
                       _space(),
                       //StatelessWidget with consumer
-                      const ChangeNotifiedColorWidget(
+                      ChangeNotifiedColorWidget(
                         title: "Change notifier widget",
+                        center: Text(
+                          "Select color in tool bar",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                       ),
                       const SizedBox(height: 2000.0), //Add enough space so items can be scrolled out of viewport
                     ],
@@ -144,11 +150,13 @@ class StatelessColorWidget extends StatelessWidget {
 class StatefulColorWidget extends StatefulWidget {
   final bool keepAlive;
   final String title;
+  final Icon? center;
 
   const StatefulColorWidget({
     Key? key,
     required this.keepAlive,
     required this.title,
+    this.center,
   }) : super(key: key);
 
   @override
@@ -182,6 +190,7 @@ class _StatefulColorWidgetState extends State<StatefulColorWidget> with Automati
       child: ColorCard(
         color: _randomColor,
         title: widget.title,
+        center: widget.center,
       ),
     );
   }
@@ -192,12 +201,14 @@ class _StatefulColorWidgetState extends State<StatefulColorWidget> with Automati
 
 //A stateless widget that receives it's color from a change notifier from a parent inherited widget
 class ChangeNotifiedColorWidget extends StatelessWidget {
-  final String title;
-
   const ChangeNotifiedColorWidget({
     Key? key,
     required this.title,
+    this.center,
   }) : super(key: key);
+
+  final String title;
+  final Widget? center;
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +216,7 @@ class ChangeNotifiedColorWidget extends StatelessWidget {
       return ColorCard(
         color: colorsWithName[colorName.value]!,
         title: title,
+        center: center,
       );
     });
   }
@@ -215,10 +227,12 @@ class ColorCard extends StatelessWidget {
     super.key,
     required this.color,
     required this.title,
+    this.center,
   });
 
   final String title;
   final Color color;
+  final Widget? center;
 
   @override
   Widget build(BuildContext context) {
@@ -232,6 +246,9 @@ class ColorCard extends StatelessWidget {
             Expanded(
               child: Container(
                 color: color,
+                child: Center(
+                  child: center,
+                ),
               ),
             ),
             Padding(
